@@ -1,0 +1,123 @@
+(.venv) subsc@VV:/mnt/c/Users/subsc/Personal projects/humaniti-ai-recruitment-challenge$ uvicorn app.main:app --port 7860
+INFO:     Started server process [99155]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:7860 (Press CTRL+C to quit)
+INFO:httpx2:HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-initiated-analytics "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:33790 - "GET /gradio_api/app_id HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33790 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33806 - "GET /manifest.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33790 - "GET /theme.css?v=8ad6f9b14414574fe6c6d9b4362dcdd63dfdc66d8c34cbef0982888dfc44ff04 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33816 - "GET /assets/Index-nz772N1q.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33852 - "GET /assets/Example-BeU1J4ps.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33836 - "GET /assets/Example-BLKfr5DZ.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33828 - "GET /assets/Index-DuUB0zr0.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33792 - "GET /assets/Settings-ArN2eWXU.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33832 - "GET /assets/Index-CZooJg7N.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33816 - "GET /assets/Index-CUQnb8lN.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33852 - "GET /assets/Settings-R1M6-VFv.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33852 - "POST /api/upload-url HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33852 - "POST /gradio_api/queue/join HTTP/1.1" 200 OK
+INFO:     127.0.0.1:33852 - "GET /gradio_api/queue/data?session_hash=n87ty8o76os HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for connections to close. (CTRL+C to force quit)
+Killed
+(.venv) subsc@VV:/mnt/c/Users/subsc/Personal projects/humaniti-ai-recruitment-challenge$ uvicorn app.main:app --port 7860
+INFO:     Started server process [99329]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:7860 (Press CTRL+C to quit)
+INFO:httpx2:HTTP Request: HEAD https://huggingface.co/api/telemetry/https%3A/api.gradio.app/gradio-initiated-analytics "HTTP/1.1 200 OK"
+INFO:     127.0.0.1:58928 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/index-D88pgWqG.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/index-DuOipanW.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /static/js/iframeResizer.contentWindow.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/Index-BNEsVTPO2.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/core-DZ_8y5W8.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/core-DcJb0oGd.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/src-B8NTxzPO.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/HistoryStorageControl-WpXJfujP.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/statustracker-CouyIdTk.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Index-EfSyqQsq.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/src-36BzIQt3.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/runtime-CdhHgN5_.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/HistoryStorageControl-B2s_hDWW.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/dist-Kll2twSG.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/logo-D4NPp-_W.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/src-CC39XcQU.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/statustracker-XFksEMum.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/legacy-B8FggjVV.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/browser-BZcrnZlS.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /theme.css?v=8ad6f9b14414574fe6c6d9b4362dcdd63dfdc66d8c34cbef0982888dfc44ff04 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/api-logo-CCEtYehn.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Blocks-DmKAmlrw.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/Blocks-0aNuD791.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/settings-logo-AL7zGNml.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Index-Bhs_KVDQ.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Index-DpkqE-K6.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/Index-DrCM5gzc.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/markdown-code-CcdvG8OS.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Index-BGK55NKF.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Example-CgIc4GLa.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Index-LKTY8Jbn.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/HTML-BuYIBbeV.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Example-BG5zdIqX.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Index-VzTVYr-q.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/Image-Da_XA0w6.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/ImagePreview-B2sIO-1d.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Index-CcsdfK63.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/Index-C1GyojFs.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Example-B1swpn2y.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /static/fonts/SourceSansPro/SourceSansPro-Regular.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Index-Ba0kRe4M.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/markdown-code-pNU2apjG.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/prism-BCG1-F_o.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Example-DvcNP0pl.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Index-Bvh1mu-b2.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Index-CDJ7bs8I.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/Example-bDO7g5TM.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/HTML-nXzWgPg4.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Image-D80gk2B9.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Index-C0eJ9aPa.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58928 - "GET /assets/shared-BhQ0vYrF.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Index-2bqFdrPw.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/ImagePreview-mao1r4F1.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58942 - "GET /assets/Index-rQ7sGSx5.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /assets/Example-CQdfd5zG.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /static/fonts/SourceSansPro/SourceSansPro-SemiBold.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58954 - "GET /manifest.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58944 - "GET /static/img/logo_nosize.svg HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58960 - "POST /api/upload-url HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59826 - "POST /api/jobs/aa62b287151f4704a26c8ed939b444ff/uploaded HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59826 - "POST /gradio_api/queue/join HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59832 - "GET /static/fonts/IBMPlexMono/IBMPlexMono-Regular.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59826 - "GET /gradio_api/queue/data?session_hash=oxdndh15gr HTTP/1.1" 200 OK
+INFO:storage.jobs:Job aa62b287151f4704a26c8ed939b444ff: video ready (2749 s), transcribing
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 1/5 cutting (0–600 s)
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 1/5 queued
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 2/5 cutting (585–1185 s)
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 1/5 sent to Sarvam
+INFO:assessment.transcript:Sarvam job 20261022_95bc84d1-09c9-49ec-8445-3b3be9665c09: uploading slice_00.wav
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 2/5 queued
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 3/5 cutting (1170–1770 s)
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 2/5 sent to Sarvam
+INFO:assessment.transcript:Sarvam job 20261022_30db5b51-9b11-4db1-a050-7779d4b3e5b5: uploading slice_01.wav
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 3/5 queued
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 4/5 cutting (1755–2355 s)
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 3/5 sent to Sarvam
+INFO:assessment.transcript:Sarvam job 20261022_9764d5fd-5d0d-4865-8997-dec2770e581e: uploading slice_02.wav
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 4/5 queued
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 5/5 cutting (2340–2749 s)
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 5/5 queued
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 1/5 transcribed
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 4/5 sent to Sarvam
+INFO:assessment.transcript:Sarvam job 20261022_70b71f2a-ef0a-4833-ad30-e3ddd9a9ff09: uploading slice_03.wav
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 3/5 transcribed
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 5/5 sent to Sarvam
+INFO:assessment.transcript:Sarvam job 20261022_0c27ae50-71b0-4596-94cf-e28e1e172143: uploading slice_04.wav
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 2/5 transcribed
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 4/5 transcribed
+INFO:assessment.transcript:Job aa62b287151f4704a26c8ed939b444ff: slice 5/5 transcribed
+INFO:storage.jobs:Job aa62b287151f4704a26c8ed939b444ff: 805 segments at transcripts/aa62b287151f4704a26c8ed939b444ff.json
+INFO:assessment.evaluate:Gemini attempt 1: {'input_tokens': 18647, 'cached_tokens': 0, 'thought_tokens': 2821, 'output_tokens': 1907}
+INFO:storage.jobs:Job aa62b287151f4704a26c8ed939b444ff: 8 items found, 0 quotes rejected, tier excellent (exe01 and exe03 found)

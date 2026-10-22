@@ -1,0 +1,13 @@
+# runtime
+fastapi==0.143.0
+uvicorn==0.54.0
+gradio==6.30.0
+boto3==1.43.110
+gdown==6.4.1
+python-dotenv==1.2.4
+sarvamai==0.1.36
+google-genai==2.29.0
+# dev
+pytest==9.1.1
+pyright==1.1.414
+ruff==0.16.10
