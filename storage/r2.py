@@ -25,6 +25,10 @@ class _GetResult(TypedDict):
     Body: IO[bytes]
 
 
+class _LifecycleResult(TypedDict):
+    Rules: list[dict[str, object]]
+
+
 class _S3(Protocol):
     """The S3 calls used here. boto3 ships no type hints, so this is declared by hand."""
 
@@ -44,6 +48,14 @@ class _S3(Protocol):
 
     def download_file(self, Bucket: str, Key: str, Filename: str) -> None: ...
 
+    def get_bucket_lifecycle_configuration(self, *, Bucket: str) -> _LifecycleResult: ...
+
+    def put_bucket_lifecycle_configuration(
+        self, *, Bucket: str, LifecycleConfiguration: dict[str, object]
+    ) -> object: ...
+
+    def delete_bucket_lifecycle(self, *, Bucket: str) -> object: ...
+
 
 @cache
 def _client() -> _S3:
@@ -61,10 +73,13 @@ def _client() -> _S3:
     return cast(_S3, client)
 
 
-def _is_not_found(e: ClientError) -> bool:
+def _error_code(e: ClientError) -> str | None:
     # cast: botocore types ClientError.response loosely; the S3 error code is a str when present.
-    code = cast(dict[str, dict[str, str]], e.response).get("Error", {}).get("Code")
-    return code in ("404", "NoSuchKey", "NotFound")
+    return cast(dict[str, dict[str, str]], e.response).get("Error", {}).get("Code")
+
+
+def _is_not_found(e: ClientError) -> bool:
+    return _error_code(e) in ("404", "NoSuchKey", "NotFound")
 
 
 def _bucket() -> str:
@@ -138,3 +153,28 @@ def get_json(key: str) -> object | None:
     except BotoCoreError as e:
         raise AppError("STORAGE_FAILED", f"Could not read {key}: {e}") from e
     return json.loads(obj["Body"].read())
+
+
+def lifecycle_rules() -> list[dict[str, object]]:
+    """The bucket's lifecycle rules, or [] if it has none."""
+    try:
+        return _client().get_bucket_lifecycle_configuration(Bucket=_bucket())["Rules"]
+    except ClientError as e:
+        if _error_code(e) == "NoSuchLifecycleConfiguration":
+            return []
+        raise AppError("STORAGE_FAILED", f"Could not read lifecycle rules: {e}") from e
+    except BotoCoreError as e:
+        raise AppError("STORAGE_FAILED", f"Could not read lifecycle rules: {e}") from e
+
+
+def put_lifecycle_rules(rules: list[dict[str, object]]) -> None:
+    """Replace every lifecycle rule on the bucket with `rules` ([] removes them all)."""
+    try:
+        if rules:
+            _client().put_bucket_lifecycle_configuration(
+                Bucket=_bucket(), LifecycleConfiguration={"Rules": rules}
+            )
+        else:
+            _client().delete_bucket_lifecycle(Bucket=_bucket())
+    except (BotoCoreError, ClientError) as e:
+        raise AppError("STORAGE_FAILED", f"Could not write lifecycle rules: {e}") from e

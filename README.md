@@ -1,14 +1,22 @@
 # Class Recording Quality Assessor
 
-Grades an online class recording as Poor / Average / Good / Excellent with timestamped evidence. See `design.md` for the architecture and build plan.
+Grades an online class recording as Poor / Average / Good / Excellent with timestamped evidence. See `docs/design.md` for the architecture and build plan.
 
-**Current state:** Pieces 1–5. A recording is uploaded (or fetched from a public Google Drive link) into Cloudflare R2, its audio is extracted to a 16 kHz mono WAV, Sarvam Batch STT turns it into a timestamped transcript, Gemini marks every checklist item found / not found with quotes verified against the transcript, and a rule ladder (`docs/scoring_logic.md`) turns the found items into a tier. A job record tracks the status and the page shows the grade.
+**Current state:** Pieces 1–5.
+
+1. A recording is uploaded straight from the browser (or fetched from a public Google Drive link) into Cloudflare R2.
+2. The server downloads it once; ffmpeg cuts 10-minute 16 kHz WAV slices (15 s overlap) straight from the video and queues each one as soon as it's cut, while 3 workers send slices to Sarvam Batch STT in parallel (producer-consumer).
+3. The slice transcripts are merged into one timestamped transcript (overlap duplicates dropped).
+4. Gemini marks every checklist item found / not found; every quote it cites is verified against the transcript in code.
+5. A rule ladder (`docs/scoring_logic.md`) turns the found items into a tier.
+
+The backend pushes each status change to the page (no polling), and at the end the page shows the grade and the full report. `docs/sample.log` is the server log of a real 46-minute class going through the whole pipeline.
 
 ## Prerequisites
 
 - Python 3.12
 - [uv](https://docs.astral.sh/uv/)
-- ffmpeg and ffprobe on `PATH` (`sudo apt install ffmpeg`), used for audio extraction and by the tests
+- ffmpeg and ffprobe on `PATH` (`sudo apt install ffmpeg`), used to cut audio slices from the video and by the tests
 - A Cloudflare R2 bucket and an R2 API token with **Object Read & Write** on it
 - A [Sarvam AI](https://dashboard.sarvam.ai) API key
 - A [Gemini](https://aistudio.google.com/apikey) API key
@@ -56,7 +64,17 @@ The browser uploads the video straight to R2, so the bucket must allow `PUT` fro
 ]
 ```
 
-When deployed, add the Space's origin (e.g. `https://<user>-<space>.hf.space`) to `AllowedOrigins`.
+When deployed, add the Space's origin (e.g. `https://<user>-<space>.hf.space`) to `AllowedOrigins`. The origin must match exactly: `http://127.0.0.1:7860` is a different origin from `http://localhost:7860`, and the upload fails with *"Upload to storage failed: network error or CORS"*.
+
+### 4. Auto-delete after 24 hours (optional)
+
+Recordings are private, so the bucket can delete everything a day after it was written. This sets an R2 lifecycle rule once; R2 then deletes on its own (within about a day of expiry, so objects can live up to ~48 h). It covers videos, transcripts, findings and job records, and keeps any other lifecycle rules on the bucket:
+
+```bash
+python -m storage.r2_cleanup show     # list the bucket's lifecycle rules (default)
+python -m storage.r2_cleanup apply    # add the "delete-after-24h" rule
+python -m storage.r2_cleanup remove   # remove it again
+```
 
 ## Run
 
@@ -64,7 +82,9 @@ When deployed, add the Space's origin (e.g. `https://<user>-<space>.hf.space`) t
 uvicorn app.main:app --port 7860
 ```
 
-Open <http://localhost:7860>. Add `--reload` while developing.
+Open <http://localhost:7860> (not the `127.0.0.1` link uvicorn prints, see the CORS note above). Add `--reload` while developing.
+
+The server log shows each job's progress, including one line per slice (`cutting` → `queued` → `sent to Sarvam` → `transcribed`). httpx request lines are hidden because Sarvam's upload URLs carry temporary AWS tokens.
 
 ## Using the app
 
@@ -90,9 +110,9 @@ Job records live in R2 at `jobs/{job_id}.json`.
 | Method | Path | Body | Returns |
 |---|---|---|---|
 | `POST` | `/api/upload-url` | `{"filename": "class.mp4", "size": 123456}` | `{job_id, upload_url, content_type}` |
-| `POST` | `/api/jobs/{job_id}/uploaded` | none | job record; starts audio extraction |
-| `POST` | `/api/drive` | `{"url": "https://drive.google.com/file/d/…/view"}` | job record; download then audio extraction run in the background |
-| `GET` | `/api/jobs/{job_id}` | none | job record |
+| `POST` | `/api/jobs/{job_id}/uploaded` | none | job record; starts the pipeline (a duplicate confirm is a no-op) |
+| `POST` | `/api/drive` | `{"url": "https://drive.google.com/file/d/…/view"}` | job record; the download and then the pipeline run in the background |
+| `GET` | `/api/jobs/{job_id}` | none | job record (for scripts; the page gets pushed updates instead) |
 
 The `upload_url` is a presigned single `PUT`, valid for 1 hour. Send the file with the returned `content_type` as the `Content-Type` header; its size must match `size`.
 
@@ -102,7 +122,7 @@ Errors use one envelope:
 { "error": { "code": "UPLOAD_TOO_LARGE", "message": "…", "job_id": null } }
 ```
 
-Codes and their meaning are listed in `design.md`.
+Codes and their meaning are listed in `docs/design.md`.
 
 ## Checks
 
@@ -114,8 +134,19 @@ pytest                                   # tests
 
 ## Project layout
 
-- `app/`: FastAPI endpoints, Gradio UI, config and errors
-- `storage/`: R2 client and job records
-- `assessment/`: one module per pipeline step (see `design.md`)
-- `docs/`: quality checklist and scoring rules
-- `design.md`: architecture, lookup table and build pieces
+- `app/`: FastAPI endpoints (`main.py`), Gradio UI and report (`ui.py`), config and errors
+- `storage/`: R2 client (`r2.py`), job records, pipeline runner and status notifier (`jobs.py`), 24 h auto-delete rule (`r2_cleanup.py`)
+- `assessment/`: one module per pipeline step (audio, transcript, dead air, evaluate, evidence, scoring) + `prompts.md`
+- `docs/`:
+  - `design.md`: architecture, lookup table and build pieces
+  - `class_quality_checklist.md`, `scoring_logic.md`: the quality criteria and tier rules (source of truth for item IDs)
+  - `ai_interaction_history.md`: the prompts and decisions behind the build
+  - `sample.log`: server log of one full run
+- `tests/`: pytest unit tests
+
+## Known limitations
+
+- Single process: live status updates come from an in-process notifier, so the app runs as one uvicorn worker (fine for one Space container).
+- Speaker labels come from separate Sarvam jobs per slice, so `SPEAKER_00` in one slice may be a different person in the next; Gemini infers speakers from context.
+- A failed slice (e.g. a network timeout to Sarvam) fails the whole job; there are no retries yet.
+- Video-only checklist items (camera on, etc.) are marked "Needs video check" until the frame check (edge case 2) is built.
