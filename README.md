@@ -17,7 +17,7 @@ The backend pushes each status change to the page (no polling), and at the end t
 - Python 3.12
 - [uv](https://docs.astral.sh/uv/)
 - ffmpeg and ffprobe on `PATH` (`sudo apt install ffmpeg`), used to cut audio slices from the video and by the tests
-- A Cloudflare R2 bucket and an R2 API token with **Object Read & Write** on it
+- A Cloudflare account with R2 enabled (setup step 2 creates the bucket and API token)
 - A [Sarvam AI](https://dashboard.sarvam.ai) API key
 - A [Gemini](https://aistudio.google.com/apikey) API key
 
@@ -33,15 +33,26 @@ uv pip install -r requirements.txt
 
 Every command below assumes the virtualenv is active (`source .venv/bin/activate`).
 
-### 2. Configure environment variables
+### 2. Create the R2 bucket and API token
+
+In the [Cloudflare dashboard](https://dash.cloudflare.com):
+
+1. **R2 Object Storage → Create bucket.** Pick any name; it becomes `R2_BUCKET`. Location and storage class can stay at their defaults.
+2. **Copy your Account ID** from the R2 overview page (*Account Details*). It becomes `R2_ACCOUNT_ID`; the app builds the endpoint `https://<account_id>.r2.cloudflarestorage.com` from it.
+3. **R2 Object Storage → Manage API tokens → Create API token**, then:
+   - **Permissions:** **Object Read & Write** is enough for the app. Step 5 (the auto-delete rule) changes a bucket setting, which needs **Admin Read & Write**; either pick that here, or create a second, admin token just for step 5.
+   - **Specify bucket(s):** apply the token to the bucket from step 1 only.
+4. **Copy the Access Key ID and Secret Access Key** shown after creating the token. These become `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY`. The secret is shown only once. The *Token value* on the same screen is not used, because the app talks to R2 through the S3 API.
+
+### 3. Configure environment variables
 
 Add these to `.env` in the project root (never commit it). The app loads it with `python-dotenv`; real environment variables, such as Space secrets, take precedence:
 
 ```bash
-R2_ACCOUNT_ID=...          # Cloudflare account ID (from the R2 dashboard)
-R2_ACCESS_KEY_ID=...       # R2 API token access key ID
-R2_SECRET_ACCESS_KEY=...   # R2 API token secret
-R2_BUCKET=...              # bucket name
+R2_ACCOUNT_ID=...          # step 2.2: Cloudflare account ID
+R2_ACCESS_KEY_ID=...       # step 2.4: Access Key ID
+R2_SECRET_ACCESS_KEY=...   # step 2.4: Secret Access Key
+R2_BUCKET=...              # step 2.1: bucket name
 api_subscription_key=...   # Sarvam AI API key
 GEMINI_API_KEY=...         # Gemini API key
 # GEMINI_MODEL=...         # optional, defaults to gemini-3.5-flash-lite
@@ -49,7 +60,7 @@ GEMINI_API_KEY=...         # Gemini API key
 
 The app refuses to start if any of them is missing.
 
-### 3. Add a CORS rule to the bucket
+### 4. Add a CORS rule to the bucket
 
 The browser uploads the video straight to R2, so the bucket must allow `PUT` from the app's origin. In the Cloudflare dashboard: **R2 → your bucket → Settings → CORS Policy**, add:
 
@@ -64,11 +75,13 @@ The browser uploads the video straight to R2, so the bucket must allow `PUT` fro
 ]
 ```
 
-When deployed, add the Space's origin (e.g. `https://<user>-<space>.hf.space`) to `AllowedOrigins`. The origin must match exactly: `http://127.0.0.1:7860` is a different origin from `http://localhost:7860`, and the upload fails with *"Upload to storage failed: network error or CORS"*.
+The browser only sends one presigned `PUT`, so no other methods are needed. The origin must match exactly: `http://127.0.0.1:7860` is a different origin from `http://localhost:7860`, and the upload fails with *"Upload to storage failed: network error or CORS"*.
 
-### 4. Auto-delete after 24 hours (optional)
+### 5. Auto-delete after 24 hours (optional)
 
-Recordings are private, so the bucket can delete everything a day after it was written. This sets an R2 lifecycle rule once; R2 then deletes on its own (within about a day of expiry, so objects can live up to ~48 h). It covers videos, transcripts, findings and job records, and keeps any other lifecycle rules on the bucket:
+Recordings are private, so the bucket can delete everything a day after it was written. This sets an R2 lifecycle rule once; R2 then deletes on its own (within about a day of expiry, so objects can live up to ~48 h). It covers videos, transcripts, findings and job records, and keeps any other lifecycle rules on the bucket.
+
+Writing lifecycle rules needs an **Admin Read & Write** token (step 2.3). With an Object Read & Write token, `apply` and `remove` fail with `STORAGE_FAILED … AccessDenied`. If you made a separate admin token, put its keys in `.env` while you run these commands, then switch back:
 
 ```bash
 python -m storage.r2_cleanup show     # list the bucket's lifecycle rules (default)
